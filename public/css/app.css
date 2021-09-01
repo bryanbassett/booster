@@ -38382,6 +38382,16 @@ fieldset, label { margin: 0; padding: 0;
 .rating > input:checked ~ label:hover ~ label { color: #FFED85;
 }
 
+button.special {
+  background-color: #6617cb;
+  background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
+  box-shadow: 0 0 0 0 #ec008c, 0.2rem 0.2rem 30px #6617cb;
+}
+
+button.special:hover {
+  box-shadow: 0 0 0 0 #ec008c, 0.2rem 0.2rem 60px #6617cb;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;

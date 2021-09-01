@@ -12,7 +12,7 @@ class Fundraiser extends Model
     protected $table = 'fundraisers';
     protected $with = ['reviews'];
     protected $appends = ['averageRating','reviewedAlready','reviewCount'];
-
+    protected $fillable=['user_id','fundraiser_title','fundraiser_description'];
     public function reviews(){
         return $this->hasMany(Review::class,'fundraiser_id','id');
     }

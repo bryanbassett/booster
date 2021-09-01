@@ -26322,6 +26322,38 @@ __webpack_require__.r(__webpack_exports__);
     laravelVersion: String,
     phpVersion: String,
     size: String
+  },
+  methods: {
+    createFundraiser: function createFundraiser() {
+      var thisser = this;
+      this.$swal({
+        title: 'Create New Fundraiser',
+        html: "<form id='createFundraiser'><label for='fundraiserTitle'>Fundraiser Title</label><input class='block w-full' type='text' name='fundraiserTitle'><label for='fundraiserDescription'>Description</label><textarea class='block w-full' name='fundraiserDescription'></textarea>" + "</form>",
+        confirmButtonText: 'Add Fundraiser',
+        showCancelButton: true
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          var createFundraiserForm = new FormData(document.forms.createFundraiser);
+          var title = createFundraiserForm.get('fundraiserTitle');
+          var description = createFundraiserForm.get('fundraiserDescription');
+
+          if (title == '' || description == '') {
+            thisser.$swal('You have to fill out both the title and the description');
+          } else {
+            var payload = {
+              fundraiserTitle: title,
+              fundraiserDescription: description
+            };
+            axios.post('/api/createFundraiser', payload).then(function (response) {
+              thisser.$swal(response.data);
+              window.store.commit('pageNeedsRefreshed', true);
+            });
+          }
+        } else if (result.dismiss === thisser.$swal.DismissReason.cancel) {
+          thisser.$swal('Cancelled creating a new fundraiser.');
+        }
+      });
+    }
   }
 });
 
@@ -28196,6 +28228,23 @@ var _hoisted_11 = {
 var _hoisted_12 = {
   "class": "p-6 border-t border-gray-200 dark:border-gray-700 md:border-t-0 md:border-l"
 };
+var _hoisted_13 = {
+  key: 0,
+  "class": "relative"
+};
+
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("svg", {
+  viewBox: "0 0 20 20",
+  "enable-background": "new 0 0 20 20",
+  "class": "w-6 h-6"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", {
+  fill: "#FFFFFF",
+  d: "M16,10c0,0.553-0.048,1-0.601,1H11v4.399C11,15.951,10.553,16,10,16c-0.553,0-1-0.049-1-0.601V11H4.601\n                     C4.049,11,4,10.553,4,10c0-0.553,0.049-1,0.601-1H9V4.601C9,4.048,9.447,4,10,4c0.553,0,1,0.048,1,0.601V9h4.399\n                     C15.952,9,16,9.447,16,10z"
+})], -1
+/* HOISTED */
+);
+
+var _hoisted_15 = [_hoisted_14];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Head = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Head");
 
@@ -28249,7 +28298,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* PROPS */
   , ["href"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 64
   /* STABLE_FRAGMENT */
-  ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ApplicationLogo)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ReviewModal), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_FundraisersList)])])])])])], 64
+  ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ApplicationLogo)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [_ctx.$page.props.auth.user ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    onClick: _cache[0] || (_cache[0] = function ($event) {
+      return $options.createFundraiser();
+    }),
+    title: "Add New Fundraiser",
+    "class": " absolute -top-5 -right-5 special p-4 rounded-full transition ease-in duration-200 focus:outline-none"
+  }, _hoisted_15)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ReviewModal), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_FundraisersList)])])])])])], 64
   /* STABLE_FRAGMENT */
   );
 }

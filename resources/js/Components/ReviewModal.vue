@@ -206,7 +206,7 @@ export default {
                             })
                     }
                 });
-            } 
+            }
             window.store.commit('reviewModal')
             this.boundReviewText = '';
         }

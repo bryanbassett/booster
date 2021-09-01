@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //fundraiser controller
 Route::get('/listFundraisers', [FundraiserController::class, 'listFundraisers']);
 Route::middleware('auth:sanctum')->get('/alreadyReviewed', [FundraiserController::class, 'checkIfUserAlreadyReviewed']);
-
+Route::middleware('auth:sanctum')->post('/createFundraiser', [FundraiserController::class, 'store']);
 //review controller
 Route::middleware('auth:sanctum')->post('/createReview',[ReviewController::class,'store']);
 Route::get('/reviewsForFundraiser', [ReviewController::class, 'listAllReviewsForFundraiser']);
