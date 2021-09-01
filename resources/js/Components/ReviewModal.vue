@@ -39,36 +39,36 @@
                             </DialogTitle>
                             <div class="mt-2">
                                 <DialogDescription>
-                                    <form>
+                                    <form id="reviewForm">
                                         <fieldset class="rating block w-full text-left">
                                             <input v-on:click="selectStars(5)" type="radio" id="star5" name="rating"
                                                    value="5"/><label class="full" for="star5" title="5 Stars"></label>
                                             <input v-on:click="selectStars(4.5)" type="radio" id="star4half"
-                                                   name="rating" value="4 and a half"/><label class="half"
+                                                   name="rating" value="4.5"/><label class="half"
                                                                                               for="star4half"
                                                                                               title="4.5 Stars"></label>
                                             <input v-on:click="selectStars(4)" type="radio" id="star4" name="rating"
                                                    value="4"/><label class="full" for="star4" title=" Stars"></label>
                                             <input v-on:click="selectStars(3.5)" type="radio" id="star3half"
-                                                   name="rating" value="3 and a half"/><label class="half"
+                                                   name="rating" value="3.5"/><label class="half"
                                                                                               for="star3half"
                                                                                               title="3.5 Stars"></label>
                                             <input v-on:click="selectStars(3)" type="radio" id="star3" name="rating"
                                                    value="3"/><label class="full" for="star3" title="3 Stars"></label>
                                             <input v-on:click="selectStars(2.5)" type="radio" id="star2half"
-                                                   name="rating" value="2 and a half"/><label class="half"
+                                                   name="rating" value="2.5"/><label class="half"
                                                                                               for="star2half"
                                                                                               title="2.5 Stars"></label>
                                             <input v-on:click="selectStars(2)" type="radio" id="star2" name="rating"
                                                    value="2"/><label class="full" for="star2" title="2 Stars"></label>
                                             <input v-on:click="selectStars(1.5)" type="radio" id="star1half"
-                                                   name="rating" value="1 and a half"/><label class="half"
+                                                   name="rating" value="1.5"/><label class="half"
                                                                                               for="star1half"
                                                                                               title="1.5 Stars"></label>
                                             <input v-on:click="selectStars(1)" type="radio" id="star1" name="rating"
                                                    value="1"/><label class="full" for="star1" title="1 star"></label>
                                             <input v-on:click="selectStars(0.5)" type="radio" id="starhalf"
-                                                   name="rating" value="half"/><label class="half" for="starhalf"
+                                                   name="rating" value="0.5"/><label class="half" for="starhalf"
                                                                                       title="0.5 Stars"></label>
                                         </fieldset>
 
@@ -156,6 +156,9 @@ export default {
         isReviewModalOpen() {
             return window.store.state.isReviewModalOpen;
         },
+        needsRefreshed() {
+            return window.store.state.needsRefreshed;
+        },
         user() {
             return usePage().props.value.auth.user;
         }
@@ -174,14 +177,32 @@ export default {
             window.store.commit('selectStars', amount)
         },
         openModal() {
-
             window.store.commit('selectStars', 0)
             window.store.commit('reviewText', '')
             window.store.commit('reviewModal')
         },
         closeModal(save) {
             if (save) {
-                //save
+                let thisser = this;
+                let ogModal = this.$swal({
+                    title: 'Saving review...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        thisser.$swal.showLoading();
+                        let reviewForm =  new FormData(document.forms.reviewForm);
+                        let payload = {
+                            fundraiserId:thisser.selectedFundraiserID,
+                            rating:reviewForm.get('rating'),
+                            reviewText:reviewForm.get('reviewText')
+                        }
+                        axios.post('/api/createReview',payload)
+                            .then(function (response) {
+                                ogModal.close();
+                                thisser.$swal(response.data);
+                                window.store.commit('pageNeedsRefreshed',true);
+                            })
+                    }
+                });
             } else {
                 //dont save
             }

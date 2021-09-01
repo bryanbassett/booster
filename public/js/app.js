@@ -25567,6 +25567,19 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     user: function user() {
       return (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_0__.usePage)().props.value.auth.user;
+    },
+    needsRefreshed: function needsRefreshed() {
+      return window.store.state.needsRefreshed;
+    }
+  },
+  watch: {
+    needsRefreshed: function needsRefreshed() {
+      var thisser = this;
+
+      if (thisser.needsRefreshed) {
+        thisser.getFundraisers();
+        window.store.commit('pageNeedsRefreshed', false);
+      }
     }
   },
   methods: {
@@ -25587,13 +25600,11 @@ __webpack_require__.r(__webpack_exports__);
       return starString;
     },
     showAlert: function showAlert(message) {
-      // Use sweetalert2
       this.$swal(message);
     },
     getFundraisers: function getFundraisers() {
       var thisser = this;
       axios.get('/api/listFundraisers').then(function (response) {
-        console.log(response.data);
         thisser.fundraisers = response.data;
       });
     },
@@ -25601,6 +25612,7 @@ __webpack_require__.r(__webpack_exports__);
       var thisser = this;
       axios.get('/api/alreadyReviewed?fundraiserId=' + clickedID).then(function (response) {
         if (response.data == 1) {
+          //extra data validation
           thisser.showAlert('You already reviewed this fundraiser!');
         } else {
           window.store.commit('selectFundraiserID', clickedID);
@@ -25754,6 +25766,9 @@ __webpack_require__.r(__webpack_exports__);
     isReviewModalOpen: function isReviewModalOpen() {
       return window.store.state.isReviewModalOpen;
     },
+    needsRefreshed: function needsRefreshed() {
+      return window.store.state.needsRefreshed;
+    },
     user: function user() {
       return (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_2__.usePage)().props.value.auth.user;
     }
@@ -25776,7 +25791,26 @@ __webpack_require__.r(__webpack_exports__);
       window.store.commit('reviewModal');
     },
     closeModal: function closeModal(save) {
-      if (save) {//save
+      if (save) {
+        var thisser = this;
+        var ogModal = this.$swal({
+          title: 'Saving review...',
+          allowOutsideClick: false,
+          didOpen: function didOpen() {
+            thisser.$swal.showLoading();
+            var reviewForm = new FormData(document.forms.reviewForm);
+            var payload = {
+              fundraiserId: thisser.selectedFundraiserID,
+              rating: reviewForm.get('rating'),
+              reviewText: reviewForm.get('reviewText')
+            };
+            axios.post('/api/createReview', payload).then(function (response) {
+              ogModal.close();
+              thisser.$swal(response.data);
+              window.store.commit('pageNeedsRefreshed', true);
+            });
+          }
+        });
       } else {//dont save
       }
 
@@ -26505,65 +26539,79 @@ var _hoisted_7 = {
   "class": "font-bold d-block capitalize "
 };
 var _hoisted_8 = {
+  key: 0,
+  "class": "ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"
+};
+
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  "class": "fa fa-crown mr-2"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Current Fundraising Champion");
+
+var _hoisted_11 = [_hoisted_9, _hoisted_10];
+var _hoisted_12 = {
   "class": "d-block font-light text-sm"
 };
-var _hoisted_9 = {
+var _hoisted_13 = {
   key: 0,
   "class": "d-block"
 };
-var _hoisted_10 = ["innerHTML"];
-var _hoisted_11 = {
+var _hoisted_14 = ["innerHTML"];
+var _hoisted_15 = {
   "class": "text-xs ml-2"
 };
-var _hoisted_12 = {
+var _hoisted_16 = {
   key: 1,
   "class": "d-block"
 };
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("☆ ☆ ☆ ☆ ☆ ");
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("☆ ☆ ☆ ☆ ☆ ");
 
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
   "class": "text-xs ml-2"
 }, "(no reviews yet)", -1
 /* HOISTED */
 );
 
-var _hoisted_15 = [_hoisted_13, _hoisted_14];
-var _hoisted_16 = {
+var _hoisted_19 = [_hoisted_17, _hoisted_18];
+var _hoisted_20 = {
   "class": "d-block mt-1"
 };
 
-var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
   "class": "d-inline-block bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs"
 }, " Read Reviews ", -1
 /* HOISTED */
 );
 
-var _hoisted_18 = ["onClick"];
-var _hoisted_19 = ["onClick"];
-var _hoisted_20 = {
+var _hoisted_22 = ["onClick"];
+var _hoisted_23 = ["onClick"];
+var _hoisted_24 = {
   key: 2,
   title: "Login to write reviews!",
   disabled: "",
   "class": "disabled:opacity-50 d-inline-block ml-2 bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded text-xs"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_ctx.fundraisers != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", _hoisted_3, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.fundraisers, function (fundraiser) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_ctx.fundraisers != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", _hoisted_3, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.fundraisers, function (fundraiser, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
       key: fundraiser.id,
       "class": "text-white"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.fundraiser_title), 1
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.fundraiser_title) + " ", 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.fundraiser_description), 1
+    ), index == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_8, _hoisted_11)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.fundraiser_description), 1
     /* TEXT */
-    ), fundraiser.reviews != null && fundraiser.reviews.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    ), fundraiser.reviews != null && fundraiser.reviews.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
       "class": "text-yellow-500",
-      innerHTML: $options.avgReviewStars(fundraiser.averageReviews)
+      innerHTML: $options.avgReviewStars(fundraiser.averageRating)
     }, null, 8
     /* PROPS */
-    , _hoisted_10), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, "(based on " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.reviews.length) + " review" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.reviews.length > 1 ? 's' : '') + ")", 1
+    , _hoisted_14), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_15, "(based on " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.reviews.length) + " review" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.reviews.length > 1 ? 's' : '') + ")", 1
     /* TEXT */
-    )])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviews.length == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, _hoisted_15)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [_hoisted_17, $options.user != null && !fundraiser.reviewedAlready ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    )])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviews.length == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_16, _hoisted_19)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [_hoisted_21, $options.user != null && !fundraiser.reviewedAlready ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
       key: 0,
       onClick: function onClick($event) {
         return $options.whatGotClicked(fundraiser.fundraiser_title, fundraiser.id);
@@ -26571,7 +26619,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "class": "d-inline-block ml-2 bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded text-xs"
     }, " Write Review ", 8
     /* PROPS */
-    , _hoisted_18)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviewedAlready ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    , _hoisted_22)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviewedAlready ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
       key: 1,
       onClick: function onClick($event) {
         return $options.whatGotClicked(fundraiser.fundraiser_title, fundraiser.id);
@@ -26580,7 +26628,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "class": "disabled:opacity-50 d-inline-block ml-2 bg-transparent hover:bg-red-500 text-red-500 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded text-xs"
     }, " Already Reviewed ", 8
     /* PROPS */
-    , _hoisted_19)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.user == null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", _hoisted_20, " Write Review ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]);
+    , _hoisted_23)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.user == null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", _hoisted_24, " Write Review ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]);
   }), 128
   /* KEYED_FRAGMENT */
   ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]);
@@ -26747,10 +26795,13 @@ var _hoisted_5 = {
   "class": "mt-2"
 };
 var _hoisted_6 = {
+  id: "reviewForm"
+};
+var _hoisted_7 = {
   "class": "rating block w-full text-left"
 };
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "full",
   "for": "star5",
   title: "5 Stars"
@@ -26758,7 +26809,7 @@ var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 /* HOISTED */
 );
 
-var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "half",
   "for": "star4half",
   title: "4.5 Stars"
@@ -26766,7 +26817,7 @@ var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 /* HOISTED */
 );
 
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "full",
   "for": "star4",
   title: " Stars"
@@ -26774,7 +26825,7 @@ var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 /* HOISTED */
 );
 
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "half",
   "for": "star3half",
   title: "3.5 Stars"
@@ -26782,7 +26833,7 @@ var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "full",
   "for": "star3",
   title: "3 Stars"
@@ -26790,7 +26841,7 @@ var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "half",
   "for": "star2half",
   title: "2.5 Stars"
@@ -26798,7 +26849,7 @@ var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "full",
   "for": "star2",
   title: "2 Stars"
@@ -26806,7 +26857,7 @@ var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "half",
   "for": "star1half",
   title: "1.5 Stars"
@@ -26814,7 +26865,7 @@ var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "full",
   "for": "star1",
   title: "1 star"
@@ -26822,7 +26873,7 @@ var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "class": "half",
   "for": "starhalf",
   title: "0.5 Stars"
@@ -26830,13 +26881,13 @@ var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "for": "reviewText"
 }, "Share your thoughts (please be respectful)", -1
 /* HOISTED */
 );
 
-var _hoisted_18 = {
+var _hoisted_19 = {
   "class": "mt-4"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -26904,7 +26955,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
               }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_DialogDescription, null, {
                 "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-                  return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("fieldset", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                  return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("fieldset", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[0] || (_cache[0] = function ($event) {
                       return $options.selectStars(5);
                     }),
@@ -26912,15 +26963,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     id: "star5",
                     name: "rating",
                     value: "5"
-                  }), _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                  }), _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[1] || (_cache[1] = function ($event) {
                       return $options.selectStars(4.5);
                     }),
                     type: "radio",
                     id: "star4half",
                     name: "rating",
-                    value: "4 and a half"
-                  }), _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                    value: "4.5"
+                  }), _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[2] || (_cache[2] = function ($event) {
                       return $options.selectStars(4);
                     }),
@@ -26928,15 +26979,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     id: "star4",
                     name: "rating",
                     value: "4"
-                  }), _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                  }), _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[3] || (_cache[3] = function ($event) {
                       return $options.selectStars(3.5);
                     }),
                     type: "radio",
                     id: "star3half",
                     name: "rating",
-                    value: "3 and a half"
-                  }), _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                    value: "3.5"
+                  }), _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[4] || (_cache[4] = function ($event) {
                       return $options.selectStars(3);
                     }),
@@ -26944,15 +26995,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     id: "star3",
                     name: "rating",
                     value: "3"
-                  }), _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                  }), _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[5] || (_cache[5] = function ($event) {
                       return $options.selectStars(2.5);
                     }),
                     type: "radio",
                     id: "star2half",
                     name: "rating",
-                    value: "2 and a half"
-                  }), _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                    value: "2.5"
+                  }), _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[6] || (_cache[6] = function ($event) {
                       return $options.selectStars(2);
                     }),
@@ -26960,15 +27011,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     id: "star2",
                     name: "rating",
                     value: "2"
-                  }), _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                  }), _hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[7] || (_cache[7] = function ($event) {
                       return $options.selectStars(1.5);
                     }),
                     type: "radio",
                     id: "star1half",
                     name: "rating",
-                    value: "1 and a half"
-                  }), _hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                    value: "1.5"
+                  }), _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[8] || (_cache[8] = function ($event) {
                       return $options.selectStars(1);
                     }),
@@ -26976,15 +27027,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     id: "star1",
                     name: "rating",
                     value: "1"
-                  }), _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+                  }), _hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
                     onClick: _cache[9] || (_cache[9] = function ($event) {
                       return $options.selectStars(0.5);
                     }),
                     type: "radio",
                     id: "starhalf",
                     name: "rating",
-                    value: "half"
-                  }), _hoisted_16]), _hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
+                    value: "0.5"
+                  }), _hoisted_17]), _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
                     "onUpdate:modelValue": _cache[10] || (_cache[10] = function ($event) {
                       return _ctx.boundReviewText = $event;
                     }),
@@ -26999,7 +27050,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                 _: 1
                 /* STABLE */
 
-              })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [$options.user == null || $options.user.email_verified_at == null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+              })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [$options.user == null || $options.user.email_verified_at == null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
                 key: 0,
                 type: "button",
                 disabled: "",
@@ -28217,7 +28268,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_5__.default.Store({
     selectedFundraiserID: 0,
     selectedStars: 0,
     isReviewModalOpen: false,
-    reviewText: ''
+    reviewText: '',
+    needsRefreshed: false
   },
   mutations: {
     selectFundraiser: function selectFundraiser(state, input) {
@@ -28231,6 +28283,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_5__.default.Store({
     },
     reviewModal: function reviewModal(state) {
       state.isReviewModalOpen = !state.isReviewModalOpen;
+    },
+    pageNeedsRefreshed: function pageNeedsRefreshed(state, input) {
+      state.needsRefreshed = input;
     },
     reviewText: function reviewText(state, input) {
       state.reviewText = input;

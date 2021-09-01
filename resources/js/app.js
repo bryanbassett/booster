@@ -13,7 +13,8 @@ const store = new Vuex.Store({
         selectedFundraiserID: 0,
         selectedStars:0,
         isReviewModalOpen:false,
-        reviewText:''
+        reviewText:'',
+        needsRefreshed:false,
     },
     mutations: {
         selectFundraiser (state,input) {
@@ -27,6 +28,9 @@ const store = new Vuex.Store({
         },
         reviewModal (state) {
            state.isReviewModalOpen = !state.isReviewModalOpen;
+        },
+        pageNeedsRefreshed (state,input) {
+            state.needsRefreshed = input;
         },
         reviewText(state,input){
             state.reviewText = input;

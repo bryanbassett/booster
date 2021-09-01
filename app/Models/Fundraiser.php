@@ -10,12 +10,12 @@ class Fundraiser extends Model
 {
     use HasFactory;
     protected $table = 'fundraisers';
-    protected $appends = ['averageReviews','reviewedAlready'];
+    protected $appends = ['averageRating','reviewedAlready'];
 
     public function reviews(){
         return $this->hasMany(Review::class,'fundraiser_id','id');
     }
-    public function getAverageReviewsAttribute(){
+    public function getAverageRatingAttribute(){
         return $this->reviews->avg('rating') ?? 0;
     }
     public function getReviewedAlreadyAttribute(){
