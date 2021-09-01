@@ -1,120 +1,178 @@
 <template>
-  <div class="inset-0 flex items-center justify-center">
-    <button
-      type="button"
-      @click="openModal"
-      class="px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-    >
-      Open temp dialog
-    </button>
-  </div>
-  <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" @close="closeModal">
-      <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="min-h-screen px-4 text-center">
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0"
-            enter-to="opacity-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100"
-            leave-to="opacity-0"
-          >
-            <DialogOverlay class="fixed inset-0" />
-          </TransitionChild>
+    <TransitionRoot appear :show="isReviewModalOpen" as="template">
+        <Dialog as="div" @close="closeModal">
+            <div class="fixed inset-0 z-10 overflow-y-auto">
+                <div class="min-h-screen px-4 text-center">
+                    <TransitionChild
+                        as="template"
+                        enter="duration-300 ease-out"
+                        enter-from="opacity-0"
+                        enter-to="opacity-100"
+                        leave="duration-200 ease-in"
+                        leave-from="opacity-100"
+                        leave-to="opacity-0"
+                    >
+                        <DialogOverlay class="fixed inset-0"/>
+                    </TransitionChild>
 
-          <span class="inline-block h-screen align-middle" aria-hidden="true">
+                    <span class="inline-block h-screen align-middle" aria-hidden="true">
             &#8203;
           </span>
 
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0 scale-95"
-            enter-to="opacity-100 scale-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-95"
-          >
-            <div
-              class="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl"
-            >
-              <DialogTitle
-                as="h3"
-                class="text-lg font-medium leading-6 text-gray-900"
-              >
-               Add Review
-              </DialogTitle>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">
-                    <DialogDescription>
-                        <fieldset class="rating">
-                            <input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5" title="5 stars"></label>
-                            <input type="radio" id="star4half" name="rating" value="4 and a half" /><label class="half" for="star4half" title=".5 stars"></label>
-                            <input type="radio" id="star4" name="rating" value="4" /><label class = "full" for="star4" title=" stars"></label>
-                            <input type="radio" id="star3half" name="rating" value="3 and a half" /><label class="half" for="star3half" title="3.5 stars"></label>
-                            <input type="radio" id="star3" name="rating" value="3" /><label class = "full" for="star3" title="3 stars"></label>
-                            <input type="radio" id="star2half" name="rating" value="2 and a half" /><label class="half" for="star2half" title="2.5 stars"></label>
-                            <input type="radio" id="star2" name="rating" value="2" /><label class = "full" for="star2" title="2 stars"></label>
-                            <input type="radio" id="star1half" name="rating" value="1 and a half" /><label class="half" for="star1half" title="1.5 stars"></label>
-                            <input type="radio" id="star1" name="rating" value="1" /><label class = "full" for="star1" title="1 star"></label>
-                            <input type="radio" id="starhalf" name="rating" value="half" /><label class="half" for="starhalf" title="0.5 stars"></label>
-                        </fieldset>
-                    </DialogDescription>
-                </p>
-              </div>
+                    <TransitionChild
+                        as="template"
+                        enter="duration-300 ease-out"
+                        enter-from="opacity-0 scale-95"
+                        enter-to="opacity-100 scale-100"
+                        leave="duration-200 ease-in"
+                        leave-from="opacity-100 scale-100"
+                        leave-to="opacity-0 scale-95"
+                    >
+                        <div
+                            class="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl"
+                        >
+                            <DialogTitle
+                                as="h3"
+                                class="text-lg font-medium leading-6 text-gray-900 capitalize"
+                            >
+                                Add Review For {{ selectedFundraiser }}
+                            </DialogTitle>
+                            <div class="mt-2">
+                                <DialogDescription>
+                                    <form>
+                                        <fieldset class="rating block w-full text-left">
+                                            <input v-on:click="selectStars(5)" type="radio" id="star5" name="rating"
+                                                   value="5"/><label class="full" for="star5" title="5 Stars"></label>
+                                            <input v-on:click="selectStars(4.5)" type="radio" id="star4half"
+                                                   name="rating" value="4 and a half"/><label class="half"
+                                                                                              for="star4half"
+                                                                                              title="4.5 Stars"></label>
+                                            <input v-on:click="selectStars(4)" type="radio" id="star4" name="rating"
+                                                   value="4"/><label class="full" for="star4" title=" Stars"></label>
+                                            <input v-on:click="selectStars(3.5)" type="radio" id="star3half"
+                                                   name="rating" value="3 and a half"/><label class="half"
+                                                                                              for="star3half"
+                                                                                              title="3.5 Stars"></label>
+                                            <input v-on:click="selectStars(3)" type="radio" id="star3" name="rating"
+                                                   value="3"/><label class="full" for="star3" title="3 Stars"></label>
+                                            <input v-on:click="selectStars(2.5)" type="radio" id="star2half"
+                                                   name="rating" value="2 and a half"/><label class="half"
+                                                                                              for="star2half"
+                                                                                              title="2.5 Stars"></label>
+                                            <input v-on:click="selectStars(2)" type="radio" id="star2" name="rating"
+                                                   value="2"/><label class="full" for="star2" title="2 Stars"></label>
+                                            <input v-on:click="selectStars(1.5)" type="radio" id="star1half"
+                                                   name="rating" value="1 and a half"/><label class="half"
+                                                                                              for="star1half"
+                                                                                              title="1.5 Stars"></label>
+                                            <input v-on:click="selectStars(1)" type="radio" id="star1" name="rating"
+                                                   value="1"/><label class="full" for="star1" title="1 star"></label>
+                                            <input v-on:click="selectStars(0.5)" type="radio" id="starhalf"
+                                                   name="rating" value="half"/><label class="half" for="starhalf"
+                                                                                      title="0.5 Stars"></label>
+                                        </fieldset>
 
-              <div class="mt-4">
-                <button
-                  type="button"
-                  class="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                  @click="closeModal"
-                >
-                  Save Review
-                </button>
-              </div>
+                                        <label for="reviewText">Share your thoughts (please be respectful)</label>
+                                        <textarea v-model="boundReviewText" name="reviewText" id="reviewText" rows="3"
+                                                  class="border-0 border-b-2 border-blue-400 font-medium bg-transparent block w-full"></textarea>
+                                    </form>
+                                </DialogDescription>
+
+                            </div>
+
+                            <div class="mt-4">
+                                <button
+                                    type="button"
+                                    class="inline-flex  justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                                    @click="closeModal(true)"
+                                >
+                                    Save Review
+                                </button>
+                                <button
+                                    type="button"
+                                    class="inline-flex  justify-center ml-2 px-4 py-2 text-sm font-medium text-blue-900 bg-red-100 border border-transparent rounded-md hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500"
+                                    @click="closeModal(false)"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </TransitionChild>
+                </div>
             </div>
-          </TransitionChild>
-        </div>
-      </div>
-    </Dialog>
-  </TransitionRoot>
+        </Dialog>
+    </TransitionRoot>
 </template>
 
 <script>
-import { ref } from 'vue'
+import {ref} from 'vue'
 import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogOverlay,
-  DialogDescription,
-  DialogTitle,
-} from '@headlessui/vue'
-
-export default {
-  components: {
     TransitionRoot,
     TransitionChild,
     Dialog,
     DialogOverlay,
     DialogDescription,
     DialogTitle,
-  },
+} from '@headlessui/vue'
 
-  setup() {
-    const isOpen = ref(true)
-
-    return {
-      isOpen,
-      closeModal() {
-        isOpen.value = false
-      },
-      openModal() {
-        isOpen.value = true
-      },
-    }
-  },
+export default {
+    components: {
+        TransitionRoot,
+        TransitionChild,
+        Dialog,
+        DialogOverlay,
+        DialogDescription,
+        DialogTitle,
+    },
+    data: function () {
+        return {
+            boundReviewText: '',
+        }
+    },
+    computed: {
+        selectedFundraiser() {
+            return window.store.state.selectedFundraiser;
+        },
+        selectedStars() {
+            return window.store.state.selectedStars;
+        },
+        reviewText() {
+            return window.store.state.reviewText;
+        },
+        isReviewModalOpen() {
+            return window.store.state.isReviewModalOpen;
+        }
+    },
+    watch: {
+        selectedFundraiser: function () {
+            window.store.commit('reviewModal')
+        },
+        boundReviewText: function (newReviewText) {
+            window.store.commit('reviewText', newReviewText)
+        }
+    },
+    methods: {
+        selectStars(amount) {
+            window.store.commit('selectStars', amount)
+        },
+        closeModal(save) {
+            if (save) {
+                //save
+            } else {
+                //dont save
+            }
+            window.store.commit('reviewModal')
+            this.boundReviewText = '';
+        }
+    },
+    setup() {
+        return {
+            openModal() {
+                window.store.commit('selectStars', 0)
+                window.store.commit('reviewText', '')
+                window.store.commit('reviewModal')
+            },
+        }
+    },
 }
 </script>
