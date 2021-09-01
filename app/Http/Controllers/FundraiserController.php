@@ -19,6 +19,7 @@ class FundraiserController extends Controller
         return response(json_encode(Fundraiser::with('reviews')->withCount('reviews')->get()->sortBy([['averageRating', 'desc'], ['reviewCount', 'desc']])->toArray()));
     }
 
+    
     //not necessary but extra validation just in case page hadnt refreshed since review (should be instant but you never know)
     public function checkIfUserAlreadyReviewed(){
         $reviewed = Review::where('fundraiser_id',request()->input('fundraiserId'))->where('user_id',Auth::id())->exists();
