@@ -1,6 +1,5 @@
 <template>
     <Head title="Welcome" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
         <div v-if="canLogin" class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
             <Link v-if="$page.props.auth.user" href="/dashboard" class="text-sm text-gray-700 underline">
@@ -43,6 +42,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
 import ApplicationLogo from "../Components/ApplicationLogo";
 import FundraisersList from "@/Components/FundraisersList";
 import ReviewModal from "../Components/ReviewModal";
+import { ref } from 'vue';
+
 export default {
     components: {
         ReviewModal,
