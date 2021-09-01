@@ -25831,7 +25831,6 @@ __webpack_require__.r(__webpack_exports__);
             });
           }
         });
-      } else {//dont save
       }
 
       window.store.commit('reviewModal');
