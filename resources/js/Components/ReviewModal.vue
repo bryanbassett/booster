@@ -184,17 +184,20 @@ export default {
         closeModal(save) {
             if (save) {
                 let thisser = this;
+                let reviewForm =  new FormData(document.forms.reviewForm);
                 let ogModal = this.$swal({
                     title: 'Saving review...',
                     allowOutsideClick: false,
                     didOpen: () => {
                         thisser.$swal.showLoading();
-                        let reviewForm =  new FormData(document.forms.reviewForm);
+
                         let payload = {
                             fundraiserId:thisser.selectedFundraiserID,
                             rating:reviewForm.get('rating'),
                             reviewText:reviewForm.get('reviewText')
+
                         }
+                        //if i were to go further i would limit size of review text
                         axios.post('/api/createReview',payload)
                             .then(function (response) {
                                 ogModal.close();

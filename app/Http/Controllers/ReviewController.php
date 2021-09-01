@@ -6,10 +6,23 @@ use Illuminate\Http\Request;
 use App\Models\Review;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+
 
 class ReviewController extends Controller
 {
-
+    /**
+     * Get list of reviews for fundraiser.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function listAllReviewsForFundraiser(Request $request)
+    {
+        $reviews = Review::with('user')->where('fundraiser_id',$request->fundraiserId)->get();
+        $html = View::make('reviewCard',['reviews'=>$reviews]);
+        return response($html);
+    }
 
     /**
      * Store a newly created resource in storage.

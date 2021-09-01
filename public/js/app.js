@@ -25583,6 +25583,25 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    showReviews: function showReviews(fundraiserId, fundraiserTitle) {
+      var thisser = this;
+      var ogModal = this.$swal({
+        allowOutsideClick: false,
+        didOpen: function didOpen() {
+          thisser.$swal.showLoading();
+          axios.get('/api/reviewsForFundraiser?fundraiserId=' + fundraiserId).then(function (response) {
+            ogModal.close();
+            thisser.$swal({
+              title: fundraiserTitle + ' Reviews',
+              html: response.data
+            });
+          });
+        }
+      });
+      axios.get('/api/listFundraisers').then(function (response) {
+        thisser.fundraisers = response.data;
+      });
+    },
     avgReviewStars: function avgReviewStars(avg) {
       avg = Math.round(avg);
       var starString = '';
@@ -25793,17 +25812,18 @@ __webpack_require__.r(__webpack_exports__);
     closeModal: function closeModal(save) {
       if (save) {
         var thisser = this;
+        var reviewForm = new FormData(document.forms.reviewForm);
         var ogModal = this.$swal({
           title: 'Saving review...',
           allowOutsideClick: false,
           didOpen: function didOpen() {
             thisser.$swal.showLoading();
-            var reviewForm = new FormData(document.forms.reviewForm);
             var payload = {
               fundraiserId: thisser.selectedFundraiserID,
               rating: reviewForm.get('rating'),
               reviewText: reviewForm.get('reviewText')
-            };
+            }; //if i were to go further i would limit size of review text
+
             axios.post('/api/createReview', payload).then(function (response) {
               ogModal.close();
               thisser.$swal(response.data);
@@ -26580,13 +26600,7 @@ var _hoisted_19 = [_hoisted_17, _hoisted_18];
 var _hoisted_20 = {
   "class": "d-block mt-1"
 };
-
-var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-  "class": "d-inline-block bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs"
-}, " Read Reviews ", -1
-/* HOISTED */
-);
-
+var _hoisted_21 = ["onClick"];
 var _hoisted_22 = ["onClick"];
 var _hoisted_23 = ["onClick"];
 var _hoisted_24 = {
@@ -26611,7 +26625,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* PROPS */
     , _hoisted_14), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_15, "(based on " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.reviews.length) + " review" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.reviews.length > 1 ? 's' : '') + ")", 1
     /* TEXT */
-    )])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviews.length == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_16, _hoisted_19)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [_hoisted_21, $options.user != null && !fundraiser.reviewedAlready ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    )])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviews.length == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_16, _hoisted_19)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      onClick: function onClick($event) {
+        return $options.showReviews(fundraiser.id, fundraiser.fundraiser_title);
+      },
+      "class": "d-inline-block bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs"
+    }, " Read Reviews ", 8
+    /* PROPS */
+    , _hoisted_21), $options.user != null && !fundraiser.reviewedAlready ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
       key: 0,
       onClick: function onClick($event) {
         return $options.whatGotClicked(fundraiser.fundraiser_title, fundraiser.id);

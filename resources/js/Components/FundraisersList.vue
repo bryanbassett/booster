@@ -26,7 +26,7 @@
                             <div v-if="fundraiser.reviews.length==0 " class="d-block">&#9734; &#9734; &#9734; &#9734; &#9734; <span class="text-xs ml-2">(no reviews yet)</span>
                             </div>
                             <div class="d-block mt-1">
-                                <button
+                                <button v-on:click="showReviews(fundraiser.id,fundraiser.fundraiser_title)"
                                     class="d-inline-block bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">
                                     Read Reviews
                                 </button>
@@ -42,13 +42,11 @@
                                         class="disabled:opacity-50 d-inline-block ml-2 bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded text-xs">
                                     Write Review
                                 </button>
-
                             </div>
                         </div>
                     </div>
                 </li>
             </ul>
-
         </div>
     </div>
 </template>
@@ -86,6 +84,28 @@ export default {
         },
     },
     methods: {
+        showReviews(fundraiserId,fundraiserTitle){
+            let thisser = this;
+            let ogModal = this.$swal({
+                allowOutsideClick: false,
+                didOpen: () => {
+                    thisser.$swal.showLoading();
+                    axios.get('/api/reviewsForFundraiser?fundraiserId='+fundraiserId)
+                        .then(function (response) {
+                            ogModal.close();
+                            thisser.$swal({
+                                title:fundraiserTitle+' Reviews',
+                                html:response.data
+                            }
+                            );
+                        })
+                }
+            });
+            axios.get('/api/listFundraisers')
+                .then(function (response) {
+                    thisser.fundraisers = response.data
+                })
+        },
         avgReviewStars(avg){
            avg = Math.round(avg);
            let starString = '';

@@ -22,7 +22,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+//fundraiser controller
 Route::get('/listFundraisers', [FundraiserController::class, 'listFundraisers']);
 Route::middleware('auth:sanctum')->get('/alreadyReviewed', [FundraiserController::class, 'checkIfUserAlreadyReviewed']);
 
+//review controller
 Route::middleware('auth:sanctum')->post('/createReview',[ReviewController::class,'store']);
+Route::get('/reviewsForFundraiser', [ReviewController::class, 'listAllReviewsForFundraiser']);
