@@ -16,14 +16,19 @@
                         <div class="col-span-11">
                             <div class="font-bold d-block capitalize ">{{ fundraiser.fundraiser_title }}</div>
                             <div class="d-block font-light text-sm">{{ fundraiser.fundraiser_description }}</div>
-                            <div class="d-block">&#9733; &#9733; &#9733; &#9733; &#9734; <span class="text-xs ml-2">(based off of 9 reviews)</span>
+                            <div v-if="fundraiser.reviews!=null && (fundraiser.reviews).length > 0" class="d-block">
+                                <span v-html="avgReview(fundraiser.reviews)"></span>
+
+                                <span class="text-xs ml-2">(based on {{(fundraiser.reviews).length}} review{{(fundraiser.reviews).length >1 ? 's' : ''}})</span>
                             </div>
-                            <div class="d-block">
+                            <div v-if="fundraiser.reviews.length==0 " class="d-block">&#9734; &#9734; &#9734; &#9734; &#9734; <span class="text-xs ml-2">(no reviews yet)</span>
+                            </div>
+                            <div class="d-block mt-1">
                                 <button
                                     class="d-inline-block bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">
                                     Read Reviews
                                 </button>
-                                <button v-if="user!=null" v-on:click="whatGotClicked(fundraiser.fundraiser_title)"
+                                <button v-if="user!=null" v-on:click="whatGotClicked(fundraiser.fundraiser_title,fundraiser.id)"
                                         class="d-inline-block ml-2 bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded text-xs">
                                     Write Review
                                 </button>
@@ -63,6 +68,24 @@ export default {
         }
     },
     methods: {
+        avgReview(reviews){
+           let avg = _.meanBy(reviews, (p) => p.rating);
+           avg = Math.round(avg);
+           let starString = '';
+           for(let x=0;x<avg;x++){
+               starString+='&#9733; ';
+           }
+           if(avg<5){
+               for(let x=0;x<(5-avg);x++){
+                   starString+='&#9734; ';
+               }
+           }
+           return starString;
+        },
+        showAlert: function(message) {
+            // Use sweetalert2
+            this.$swal(message);
+        },
         getFundraisers: function () {
             let thisser = this;
             axios.get('/api/listFundraisers')
@@ -71,8 +94,17 @@ export default {
 
                 })
         },
-        whatGotClicked: function (clicked) {
-            window.store.commit('selectFundraiser', clicked)
+        whatGotClicked: function (clickedName,clickedID) {
+            let thisser = this;
+            axios.get('/api/alreadyReviewed?fundraiserId='+clickedID)
+                .then(function (response) {
+                    if(response.data == 1){
+                        thisser.showAlert('You already reviewed this fundraiser!');
+                    }else{
+                        window.store.commit('selectFundraiserID', clickedID)
+                        window.store.commit('selectFundraiser', clickedName)
+                    }
+                })
         },
 
     },

@@ -18,5 +18,8 @@ use App\Http\Controllers\FundraiserController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 Route::get('/listFundraisers', [FundraiserController::class, 'listFundraisers']);
+Route::middleware('auth:sanctum')->get('/alreadyReviewed', [FundraiserController::class, 'checkIfUserAlreadyReviewed']);

@@ -10,5 +10,7 @@ class Fundraiser extends Model
     use HasFactory;
     protected $table = 'fundraisers';
 
-
+    public function reviews(){
+        return $this->hasMany(Review::class,'fundraiser_id','id');
+    }
 }

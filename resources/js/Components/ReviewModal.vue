@@ -82,6 +82,16 @@
 
                             <div class="mt-4">
                                 <button
+                                    v-if="user==null || user.email_verified_at==null"
+                                    type="button"
+                                    disabled
+                                    class="disabled:opacity-50 inline-flex  justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                                    @click="closeModal(true)"
+                                >
+                                    Verify Email To Save Review
+                                </button>
+                                <button
+                                    v-if="user!=null && user.email_verified_at!=null"
                                     type="button"
                                     class="inline-flex  justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                                     @click="closeModal(true)"
@@ -114,6 +124,7 @@ import {
     DialogDescription,
     DialogTitle,
 } from '@headlessui/vue'
+import {usePage} from "@inertiajs/inertia-vue3";
 
 export default {
     components: {
@@ -133,6 +144,9 @@ export default {
         selectedFundraiser() {
             return window.store.state.selectedFundraiser;
         },
+        selectedFundraiserID() {
+            return window.store.state.selectedFundraiserID;
+        },
         selectedStars() {
             return window.store.state.selectedStars;
         },
@@ -141,7 +155,11 @@ export default {
         },
         isReviewModalOpen() {
             return window.store.state.isReviewModalOpen;
+        },
+        user() {
+            return usePage().props.value.auth.user;
         }
+
     },
     watch: {
         selectedFundraiser: function () {
@@ -155,6 +173,12 @@ export default {
         selectStars(amount) {
             window.store.commit('selectStars', amount)
         },
+        openModal() {
+
+            window.store.commit('selectStars', 0)
+            window.store.commit('reviewText', '')
+            window.store.commit('reviewModal')
+        },
         closeModal(save) {
             if (save) {
                 //save
@@ -165,14 +189,6 @@ export default {
             this.boundReviewText = '';
         }
     },
-    setup() {
-        return {
-            openModal() {
-                window.store.commit('selectStars', 0)
-                window.store.commit('reviewText', '')
-                window.store.commit('reviewModal')
-            },
-        }
-    },
+
 }
 </script>
