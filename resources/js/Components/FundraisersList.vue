@@ -94,8 +94,9 @@ export default {
                         .then(function (response) {
                             ogModal.close();
                             thisser.$swal({
-                                title:fundraiserTitle+' Reviews',
-                                html:response.data
+                                title:_.startCase(fundraiserTitle)+' Reviews',
+                                html:response.data,
+                                confirmButtonText:'Done'
                             }
                             );
                         })

@@ -14,8 +14,9 @@
             </h2>
             <p class="mt-2 text-gray-600">{{$review->review_text}}</p>
         </div>
-        <div class="flex justify-end mt-4">
-            <span class="text-sm font-medium text-indigo-500">-{{$review->user->name}}</span>
+        <div class="w-100 text-right">
+            <span class="block text-sm font-medium text-indigo-500">-{{$review->user->name}} </span>
+            <span class="block text-sm text-black"><small>{{$review->created_at}}</small></span>
         </div>
     </div>
 @endforeach

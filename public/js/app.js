@@ -25592,8 +25592,9 @@ __webpack_require__.r(__webpack_exports__);
           axios.get('/api/reviewsForFundraiser?fundraiserId=' + fundraiserId).then(function (response) {
             ogModal.close();
             thisser.$swal({
-              title: fundraiserTitle + ' Reviews',
-              html: response.data
+              title: _.startCase(fundraiserTitle) + ' Reviews',
+              html: response.data,
+              confirmButtonText: 'Done'
             });
           });
         }
