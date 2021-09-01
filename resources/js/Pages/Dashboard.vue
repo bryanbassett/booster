@@ -10,9 +10,9 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        You're logged in!
+                <div class="bg-dark overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-gray-400 border-b border-gray-200">
+                    <span v-html="myStuff"></span>
                     </div>
                 </div>
             </div>
@@ -29,5 +29,18 @@ export default {
         BreezeAuthenticatedLayout,
         Head,
     },
+    data: function(){
+        return{
+            myStuff:''
+        }
+    },
+    mounted: function () {
+        let thisser = this;
+        axios.get('/api/getMyStuff')
+            .then(function (response) {
+                thisser.myStuff = response.data
+            })
+    },
+
 }
 </script>

@@ -4,7 +4,10 @@ use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FundraiserController;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+use App\Models\Fundraiser;
+use App\Models\Review;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,9 +22,14 @@ use App\Http\Controllers\FundraiserController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->get('/getMyStuff', function (Request $request) {
+    $userId=Auth::id();
+    $reviews = Review::with('fundraiser')->where('user_id',$userId)->get();
+    $fundraisers = Fundraiser::where('user_id',$userId)->get();
+    return View::make('myStuff',['reviews'=>$reviews,'fundraisers'=>$fundraisers]);
 });
+
+
 //fundraiser controller
 Route::get('/listFundraisers', [FundraiserController::class, 'listFundraisers']);
 Route::middleware('auth:sanctum')->get('/alreadyReviewed', [FundraiserController::class, 'checkIfUserAlreadyReviewed']);
