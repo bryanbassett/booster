@@ -19,6 +19,7 @@ class Fundraiser extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->text('fundraiser_title')->nullable();
             $table->text('fundraiser_description')->default('No description.');
+            $table->unique(['fundraiser_title']);
             $table->timestamps();
         });
     }

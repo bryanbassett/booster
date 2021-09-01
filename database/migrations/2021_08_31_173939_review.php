@@ -19,6 +19,7 @@ class Review extends Migration
             $table->unsignedInteger('fundraiser_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('fundraiser_id')->references('id')->on('fundraisers');
+            $table->unique(['fundraiser_id', 'user_id']);
             $table->text('review_text')->nullable();
             $table->integer('rating')->default(1);
             $table->timestamps();
