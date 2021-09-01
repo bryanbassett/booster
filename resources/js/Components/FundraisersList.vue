@@ -17,7 +17,7 @@
                             <div class="font-bold d-block capitalize ">{{ fundraiser.fundraiser_title }}</div>
                             <div class="d-block font-light text-sm">{{ fundraiser.fundraiser_description }}</div>
                             <div v-if="fundraiser.reviews!=null && (fundraiser.reviews).length > 0" class="d-block">
-                                <span v-html="avgReview(fundraiser.reviews)"></span>
+                                <span class="text-yellow-500" v-html="avgReviewStars(fundraiser.averageReviews)"></span>
 
                                 <span class="text-xs ml-2">(based on {{(fundraiser.reviews).length}} review{{(fundraiser.reviews).length >1 ? 's' : ''}})</span>
                             </div>
@@ -25,12 +25,16 @@
                             </div>
                             <div class="d-block mt-1">
                                 <button
-                                    class="d-inline-block bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">
+                                    class="d-inline-block bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">
                                     Read Reviews
                                 </button>
-                                <button v-if="user!=null" v-on:click="whatGotClicked(fundraiser.fundraiser_title,fundraiser.id)"
+                                <button v-if="user!=null && !fundraiser.reviewedAlready" v-on:click="whatGotClicked(fundraiser.fundraiser_title,fundraiser.id)"
                                         class="d-inline-block ml-2 bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded text-xs">
                                     Write Review
+                                </button>
+                                <button v-if="fundraiser.reviewedAlready" v-on:click="whatGotClicked(fundraiser.fundraiser_title,fundraiser.id)" disabled
+                                        class="disabled:opacity-50 d-inline-block ml-2 bg-transparent hover:bg-red-500 text-red-500 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded text-xs">
+                                    Already Reviewed
                                 </button>
                                 <button v-if="user==null" title="Login to write reviews!" disabled
                                         class="disabled:opacity-50 d-inline-block ml-2 bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded text-xs">
@@ -68,8 +72,7 @@ export default {
         }
     },
     methods: {
-        avgReview(reviews){
-           let avg = _.meanBy(reviews, (p) => p.rating);
+        avgReviewStars(avg){
            avg = Math.round(avg);
            let starString = '';
            for(let x=0;x<avg;x++){
@@ -90,6 +93,7 @@ export default {
             let thisser = this;
             axios.get('/api/listFundraisers')
                 .then(function (response) {
+                    console.log(response.data);
                     thisser.fundraisers = response.data
 
                 })

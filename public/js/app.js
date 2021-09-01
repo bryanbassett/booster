@@ -25570,11 +25570,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    avgReview: function avgReview(reviews) {
-      var avg = _.meanBy(reviews, function (p) {
-        return p.rating;
-      });
-
+    avgReviewStars: function avgReviewStars(avg) {
       avg = Math.round(avg);
       var starString = '';
 
@@ -25597,6 +25593,7 @@ __webpack_require__.r(__webpack_exports__);
     getFundraisers: function getFundraisers() {
       var thisser = this;
       axios.get('/api/listFundraisers').then(function (response) {
+        console.log(response.data);
         thisser.fundraisers = response.data;
       });
     },
@@ -26537,14 +26534,15 @@ var _hoisted_16 = {
 };
 
 var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-  "class": "d-inline-block bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs"
+  "class": "d-inline-block bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs"
 }, " Read Reviews ", -1
 /* HOISTED */
 );
 
 var _hoisted_18 = ["onClick"];
-var _hoisted_19 = {
-  key: 1,
+var _hoisted_19 = ["onClick"];
+var _hoisted_20 = {
+  key: 2,
   title: "Login to write reviews!",
   disabled: "",
   "class": "disabled:opacity-50 d-inline-block ml-2 bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded text-xs"
@@ -26559,12 +26557,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.fundraiser_description), 1
     /* TEXT */
     ), fundraiser.reviews != null && fundraiser.reviews.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
-      innerHTML: $options.avgReview(fundraiser.reviews)
+      "class": "text-yellow-500",
+      innerHTML: $options.avgReviewStars(fundraiser.averageReviews)
     }, null, 8
     /* PROPS */
     , _hoisted_10), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, "(based on " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.reviews.length) + " review" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(fundraiser.reviews.length > 1 ? 's' : '') + ")", 1
     /* TEXT */
-    )])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviews.length == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, _hoisted_15)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [_hoisted_17, $options.user != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    )])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviews.length == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, _hoisted_15)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [_hoisted_17, $options.user != null && !fundraiser.reviewedAlready ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
       key: 0,
       onClick: function onClick($event) {
         return $options.whatGotClicked(fundraiser.fundraiser_title, fundraiser.id);
@@ -26572,7 +26571,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "class": "d-inline-block ml-2 bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded text-xs"
     }, " Write Review ", 8
     /* PROPS */
-    , _hoisted_18)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.user == null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", _hoisted_19, " Write Review ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]);
+    , _hoisted_18)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), fundraiser.reviewedAlready ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+      key: 1,
+      onClick: function onClick($event) {
+        return $options.whatGotClicked(fundraiser.fundraiser_title, fundraiser.id);
+      },
+      disabled: "",
+      "class": "disabled:opacity-50 d-inline-block ml-2 bg-transparent hover:bg-red-500 text-red-500 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded text-xs"
+    }, " Already Reviewed ", 8
+    /* PROPS */
+    , _hoisted_19)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.user == null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", _hoisted_20, " Write Review ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]);
   }), 128
   /* KEYED_FRAGMENT */
   ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]);
